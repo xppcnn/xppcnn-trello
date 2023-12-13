@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 const headingFont = localFont({
   src: "../../public/font/font.woff2",
 });
-console.log("🚀 ~ file: page.tsx:12 ~ headingFont:", headingFont);
 
 const textFont = Poppins({
   subsets: ["latin"],
