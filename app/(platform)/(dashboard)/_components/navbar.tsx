@@ -1,4 +1,4 @@
-import Logo from "@/components/custom/Logo";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
