@@ -1,16 +1,13 @@
 import React from "react";
-import { auth } from "@clerk/nextjs";
-import BoardForm from "./form";
-import prisma from "@/lib/prisma";
+import Info from "./_components/Info";
+import { Separator } from "@/components/ui/separator";
+import BoardList from "./_components/BoardList";
 const OrgPage = async () => {
-  const { userId, orgId } = await auth();
-  const boards = await prisma.board.findMany();
   return (
-    <div>
-      <BoardForm />
-      {boards.map((board) => (
-        <div key={board.id}>{board.title}</div>
-      ))}
+    <div className="w-full mb-20">
+      <Info />
+      <Separator className="my-4" />
+      <BoardList />
     </div>
   );
 };
