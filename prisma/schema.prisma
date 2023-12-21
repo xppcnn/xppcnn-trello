@@ -15,5 +15,21 @@ model Board {
 
   title String
 
+  orgId String @map("org_id")
+
+  imageId String @map("image_id")
+
+  imageFullUrl String @map("image_full_url") @db.Text
+
+  imageThumbUrl String @map("image_thumb_url") @db.Text
+
+  imageUserName String @map("image_user_name") @db.Text
+
+  imageLinkHTML String @map("image_link_html") @db.Text
+
+  createTime DateTime @default(now()) @map("create_time")
+
+  updateTime DateTime @updatedAt @map("update_time")
+
   @@map("board")
 }

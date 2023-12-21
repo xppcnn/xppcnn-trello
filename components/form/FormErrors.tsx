@@ -10,7 +10,7 @@ const FormErrors = ({ id, errors }: FormErrorsProps) => {
     return null;
   }
   return (
-    <div id={`${id}-error`} className="mt-2 text-xs text-rose-500">
+    <div id={`${id}-error`} className="mt-2 text-xs text-rose-500 ring-offset-background out">
       {errors?.[id]?.map((error) => (
         <div
           key={error}

@@ -24,10 +24,12 @@ specifiers:
   prisma: ^5.7.0
   react: ^18
   react-dom: ^18
+  sonner: ^1.2.4
   tailwind-merge: ^2.1.0
   tailwindcss: ^3.3.0
   tailwindcss-animate: ^1.0.7
   typescript: ^5
+  unsplash-js: ^7.0.19
   usehooks-ts: ^2.9.1
   zod: ^3.22.4
   zustand: ^4.4.7
@@ -49,8 +51,10 @@ dependencies:
   prisma: registry.npmmirror.com/prisma/5.7.0
   react: registry.npmmirror.com/react/18.2.0
   react-dom: registry.npmmirror.com/react-dom/18.2.0_react@18.2.0
+  sonner: registry.npmmirror.com/sonner/1.2.4_react-dom@18.2.0+react@18.2.0
   tailwind-merge: registry.npmmirror.com/tailwind-merge/2.1.0
   tailwindcss-animate: registry.npmmirror.com/tailwindcss-animate/1.0.7_tailwindcss@3.3.6
+  unsplash-js: registry.npmmirror.com/unsplash-js/7.0.19
   usehooks-ts: registry.npmmirror.com/usehooks-ts/2.9.1_react-dom@18.2.0+react@18.2.0
   zod: registry.npmmirror.com/zod/3.22.4
   zustand: registry.npmmirror.com/zustand/4.4.7_663ce0139d56f0496a5b7ce8ec435b45
@@ -4183,6 +4187,19 @@ packages:
       type-fest: registry.npmmirror.com/type-fest/2.19.0
     dev: false
 
+  registry.npmmirror.com/sonner/1.2.4_react-dom@18.2.0+react@18.2.0:
+    resolution: {integrity: sha512-WGLP2QQnomgewaCTsK7YWiLcy5n1Yj83vsL5cP4zHMmpSkmFsCYTpQKhlXJrPE5kzjwbqCkCFXcOpbKc4vaUaA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/sonner/-/sonner-1.2.4.tgz}
+    id: registry.npmmirror.com/sonner/1.2.4
+    name: sonner
+    version: 1.2.4
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: registry.npmmirror.com/react/18.2.0
+      react-dom: registry.npmmirror.com/react-dom/18.2.0_react@18.2.0
+    dev: false
+
   registry.npmmirror.com/source-map-js/1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/source-map-js/-/source-map-js-1.0.2.tgz}
     name: source-map-js
@@ -4569,6 +4586,13 @@ packages:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/undici-types/-/undici-types-5.26.5.tgz}
     name: undici-types
     version: 5.26.5
+
+  registry.npmmirror.com/unsplash-js/7.0.19:
+    resolution: {integrity: sha512-j6qT2floy5Q2g2d939FJpwey1yw/GpQecFiSouyJtsHQPj3oqmqq3K4rI+GF8vU1zwGCT7ZwIGQd2dtCQLjYJw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/unsplash-js/-/unsplash-js-7.0.19.tgz}
+    name: unsplash-js
+    version: 7.0.19
+    engines: {node: '>=10'}
+    dev: false
 
   registry.npmmirror.com/update-browserslist-db/1.0.13_browserslist@4.22.2:
     resolution: {integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.0.13.tgz}

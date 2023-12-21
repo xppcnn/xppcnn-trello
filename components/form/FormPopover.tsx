@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { ElementRef, useRef } from "react";
 import {
   Popover,
   PopoverContent,
@@ -12,6 +12,9 @@ import FormInput from "./FormInput";
 import FormSubmit from "./FormSubmit";
 import { useAction } from "@/hooks/useAction";
 import { createBoard } from "@/actions/board";
+import { toast } from "sonner";
+import FormPicker from "./FormPicker";
+import { useRouter } from "next/navigation";
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -25,12 +28,23 @@ const FormPopover = ({
   align = "center",
   sideOffset = 0,
 }: FormPopoverProps) => {
-  const { execute, fieldErrors } = useAction(createBoard);
+  const closeRef = useRef<ElementRef<"button">>(null);
+  const router = useRouter();
+  const { execute, fieldErrors } = useAction(createBoard, {
+    onSuccess(data) {
+      toast.success("创建成功");
+      closeRef.current?.click();
+      router.push(`/board/${data.id}`);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
 
   const onSubmit = (formData: FormData) => {
     const title = formData.get("title") as string;
-
-    execute({ title });
+    const image = formData.get("image") as string;
+    execute({ title, image });
   };
   return (
     <Popover>
@@ -44,7 +58,7 @@ const FormPopover = ({
         <div className="text-sm font-medium text-center text-neutral-600 pb-4">
           创建看板
         </div>
-        <PopoverClose asChild>
+        <PopoverClose asChild ref={closeRef}>
           <Button
             variant="ghost"
             className="h-auto w-auto p-2 absolute top-2 right-2 text-neutral-600"
@@ -53,6 +67,7 @@ const FormPopover = ({
           </Button>
         </PopoverClose>
         <form className="space-y-4" action={onSubmit}>
+          <FormPicker id="image" errors={fieldErrors} />
           <FormInput id="title" label="名称" errors={fieldErrors} />
 
           <FormSubmit className="w-full">创建</FormSubmit>
