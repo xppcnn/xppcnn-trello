@@ -1,9 +1,27 @@
+import React from "react";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { HelpCircle, User2 } from "lucide-react";
 import Hint from "@/components/Hint";
 import FormPopover from "@/components/form/FormPopover";
-import { HelpCircle, User2 } from "lucide-react";
-import React from "react";
+import prisma from "@/lib/prisma";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const BoardList = () => {
+const BoardList = async () => {
+  const { orgId } = auth();
+  if (!orgId) {
+    redirect("/select-org");
+  }
+
+  const boards = await prisma?.board.findMany({
+    where: {
+      orgId,
+    },
+    orderBy: {
+      createTime: "desc",
+    },
+  });
   return (
     <div className="space-y-4">
       <div className="flex items-centertext-lg font-semibold text-neutral-700">
@@ -11,6 +29,17 @@ const BoardList = () => {
         你的看板
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {boards.map((board) => (
+          <Link
+            key={board.id}
+            href={`/board/${board.id}`}
+            className="aspect-video relative group bg-no-repeat bg-center bg-cover rounded-sm h-full w-full p-2 overflow-hidden"
+            style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
+          >
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition"></div>
+            <p className="relative text-white font-semibold">{board.title}</p>
+          </Link>
+        ))}
         <FormPopover side="right" align="start">
           <div
             className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition"
@@ -32,3 +61,18 @@ const BoardList = () => {
 };
 
 export default BoardList;
+
+BoardList.Skeleton = function BoardListSkeleton() {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+      <Skeleton className="h-full w-full rounded-sm p-2 aspect-video"></Skeleton>
+    </div>
+  );
+};
