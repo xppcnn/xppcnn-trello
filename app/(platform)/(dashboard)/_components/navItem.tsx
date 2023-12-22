@@ -4,14 +4,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Organization } from "@clerk/nextjs/server";
-import React from "react";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { Activity, CreditCard, Layout, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { usePathname, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { useOrganizationList } from "@clerk/nextjs";
+import { Organization } from "@clerk/nextjs/server";
+import { Activity, CreditCard, Layout, Settings } from "lucide-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NavItemProps {
   isActive: boolean;
@@ -21,6 +21,7 @@ interface NavItemProps {
 }
 const NavItem = (props: NavItemProps) => {
   const { organization, onExpand, isActive, isExpanded } = props;
+  const { setActive } = useOrganizationList();
   const router = useRouter();
   const pathname = usePathname();
   const routes = [
@@ -47,7 +48,14 @@ const NavItem = (props: NavItemProps) => {
   ];
 
   const handleClick = (href: string) => {
-    router.push(href);
+    if (setActive) {
+      setActive({
+        organization: organization.id as string,
+        beforeEmit: () => router.push(href),
+      });
+    } else {
+      router.push(href);
+    }
   };
   return (
     <AccordionItem value={organization.id} className="border-none">
