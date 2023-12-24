@@ -1,8 +1,13 @@
 "use server";
 
 import { createSafeAction } from "@/lib/createSafeAction";
-import { createBoardSchema } from "./schema";
-import { createBoardReturnType, createBoardType } from "./types";
+import { createBoardSchema, updateBoardSchema } from "./schema";
+import {
+  createBoardReturnType,
+  createBoardType,
+  updateBoardReturnType,
+  updateBoardType,
+} from "./types";
 import { auth } from "@clerk/nextjs";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -57,4 +62,42 @@ const createBoardHandler = async (
 export const createBoard = createSafeAction(
   createBoardSchema,
   createBoardHandler
+);
+
+const updateBoardHandler = async (
+  data: updateBoardType
+): Promise<updateBoardReturnType> => {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+
+  const { title, id } = data;
+
+  try {
+    const updateBoard = await prisma.board.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+      },
+    });
+    revalidatePath(`/board/${id}`);
+    return {
+      data: updateBoard,
+    };
+  } catch (error) {
+    return {
+      error: "系统错误,请稍后再试！",
+    };
+  }
+};
+
+export const updateBoard = createSafeAction(
+  updateBoardSchema,
+  updateBoardHandler
 );
