@@ -1,16 +1,23 @@
 "use server";
 
 import { createSafeAction } from "@/lib/createSafeAction";
-import { createBoardSchema, updateBoardSchema } from "./schema";
+import {
+  createBoardSchema,
+  deleteBoardSchema,
+  updateBoardSchema,
+} from "./schema";
 import {
   createBoardReturnType,
   createBoardType,
+  deleteBoardReturnType,
+  deleteBoardType,
   updateBoardReturnType,
   updateBoardType,
 } from "./types";
 import { auth } from "@clerk/nextjs";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 const createBoardHandler = async (
   data: createBoardType
@@ -59,11 +66,6 @@ const createBoardHandler = async (
   }
 };
 
-export const createBoard = createSafeAction(
-  createBoardSchema,
-  createBoardHandler
-);
-
 const updateBoardHandler = async (
   data: updateBoardType
 ): Promise<updateBoardReturnType> => {
@@ -81,7 +83,7 @@ const updateBoardHandler = async (
     const updateBoard = await prisma.board.update({
       where: {
         id,
-        orgId
+        orgId,
       },
       data: {
         title,
@@ -98,7 +100,46 @@ const updateBoardHandler = async (
   }
 };
 
+const deleteBoardHandler = async (
+  data: deleteBoardType
+): Promise<deleteBoardReturnType> => {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+
+  const { id } = data;
+
+  try {
+    await prisma.board.delete({
+      where: {
+        id,
+        orgId,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "系统错误,请稍后再试！",
+    };
+  }
+  revalidatePath(`/organization/${orgId}`);
+  redirect(`/organization/${orgId}`);
+};
+
+export const createBoard = createSafeAction(
+  createBoardSchema,
+  createBoardHandler
+);
+
 export const updateBoard = createSafeAction(
   updateBoardSchema,
   updateBoardHandler
+);
+
+export const deleteBoard = createSafeAction(
+  deleteBoardSchema,
+  deleteBoardHandler
 );

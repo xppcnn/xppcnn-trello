@@ -57,7 +57,8 @@ const TitleForm = ({ data }: { data: Board }) => {
   return (
     <Button
       onClick={handleClick}
-      className="bg-transparent hover:bg-white/20 text-white font-bold text-lg py-1 px-2"
+      variant="transparent"
+      className="font-bold text-lg py-1 px-2"
     >
       {title}
     </Button>

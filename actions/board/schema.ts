@@ -22,3 +22,7 @@ export const updateBoardSchema = z.object({
     .min(3, { message: "不得少于三个字符" }),
   id: z.string(),
 });
+
+export const deleteBoardSchema = z.object({
+  id: z.string(),
+});
