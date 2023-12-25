@@ -81,6 +81,7 @@ const updateBoardHandler = async (
     const updateBoard = await prisma.board.update({
       where: {
         id,
+        orgId
       },
       data: {
         title,

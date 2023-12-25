@@ -4,10 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import BoardNavBar from "./_components/BoardNavBar";
 
-const getBoard = cache((boardId: string) =>
+const getBoard = cache((boardId: string, orgId: string) =>
   prisma.board.findUnique({
     where: {
       id: boardId,
+      orgId,
     },
   })
 );
@@ -17,7 +18,13 @@ export async function generateMetadata({
 }: {
   params: { boardId: string };
 }) {
-  const board = await getBoard(params.boardId);
+  const { orgId } = auth();
+  if (!orgId) {
+    return {
+      title: "",
+    };
+  }
+  const board = await getBoard(params.boardId, orgId);
   return {
     title: board?.title,
   };
@@ -33,7 +40,7 @@ const BoardIdLayout = async ({
   if (!orgId) {
     redirect("/select-org");
   }
-  const board = await getBoard(params.boardId);
+  const board = await getBoard(params.boardId, orgId);
   if (!board) {
     return notFound();
   }
