@@ -3,14 +3,17 @@ import React from "react";
 
 interface FormErrorsProps {
   id: string;
-  errors?: Record<string, string[] | undefined>;
+  errors?: Record<string, string[] | null> | null;
 }
 const FormErrors = ({ id, errors }: FormErrorsProps) => {
   if (!errors) {
     return null;
   }
   return (
-    <div id={`${id}-error`} className="mt-2 text-xs text-rose-500 ring-offset-background out">
+    <div
+      id={`${id}-error`}
+      className="mt-2 text-xs text-rose-500 ring-offset-background out"
+    >
       {errors?.[id]?.map((error) => (
         <div
           key={error}
