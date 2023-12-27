@@ -24,3 +24,13 @@ export const updateListSchema = z.object({
   boardId: z.string(),
   id: z.string(),
 });
+
+export const copyListSchema = z.object({
+  boardId: z.string(),
+  id: z.string(),
+});
+
+export const deleteListSchema = z.object({
+  boardId: z.string(),
+  id: z.string(),
+});

@@ -6,6 +6,7 @@ import { useEventListener } from "usehooks-ts";
 import { useAction } from "@/hooks/useAction";
 import { updateList } from "@/actions/list";
 import { toast } from "sonner";
+import ListOptions from "./ListOptions";
 
 interface ListHeaderProps {
   data: List;
@@ -52,6 +53,8 @@ const ListHeader = ({ data }: ListHeaderProps) => {
     }
     execute({ id: data.id, boardId: data.boardId, title: newTitle });
   };
+
+  const addCard = () => {};
   return (
     <div className="pt-2 px-2 text-sm font-semibold flex justify-between gap-x-2">
       {isEditing ? (
@@ -73,6 +76,7 @@ const ListHeader = ({ data }: ListHeaderProps) => {
           {title}
         </div>
       )}
+      <ListOptions data={data} addCard={addCard} />
     </div>
   );
 };

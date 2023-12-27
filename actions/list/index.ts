@@ -1,6 +1,8 @@
 "use server";
 import { auth } from "@clerk/nextjs";
 import {
+  copyListReturnType,
+  copyListType,
   createListReturnType,
   createListType,
   updateListReturnType,
@@ -9,7 +11,7 @@ import {
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/createSafeAction";
-import { createListSchema, updateListSchema } from "./schema";
+import { copyListSchema, createListSchema, updateListSchema } from "./schema";
 const createListHandler = async (
   data: createListType
 ): Promise<createListReturnType> => {
@@ -99,6 +101,95 @@ const updateListHandler = async (
   };
 };
 
+const copyListHandler = async (
+  data: copyListType
+): Promise<copyListReturnType> => {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+  const { id, boardId } = data;
+  const list = await prisma.list.findUnique({
+    where: {
+      id,
+      boardId,
+    },
+    include: {
+      cards: true,
+    },
+  });
+  const lastList = await prisma.list.findFirst({
+    where: {
+      boardId,
+    },
+    orderBy: {
+      order: "desc",
+    },
+    select: {
+      order: true,
+    },
+  });
+  const newOrder = lastList ? lastList.order + 1 : 1;
+
+  const copyList = await prisma.list.create({
+    data: {
+      title: `${list?.title}-Copy`,
+      boardId: boardId,
+      order: newOrder,
+      cards: {
+        createMany: {
+          data:
+            list?.cards.map((card) => ({
+              title: card.title,
+              description: card.title,
+              order: card.order,
+            })) || [],
+        },
+      },
+    },
+  });
+  revalidatePath(`/board/${boardId}`);
+  return {
+    data: copyList,
+  };
+};
+
+const deleteListHandler = async (
+  data: copyListType
+): Promise<copyListReturnType> => {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+  const { id, boardId } = data;
+  try {
+    await prisma.list.delete({
+      where: {
+        id,
+        boardId,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "删除失败",
+    };
+  }
+  revalidatePath(`/board/${boardId}`);
+  return {
+    data: null,
+  };
+};
+
 export const createList = createSafeAction(createListSchema, createListHandler);
 
 export const updateList = createSafeAction(updateListSchema, updateListHandler);
+
+export const copyList = createSafeAction(copyListSchema, copyListHandler);
+
+export const deleteList = createSafeAction(copyListSchema, deleteListHandler);
