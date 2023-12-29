@@ -55,7 +55,7 @@ model Card {
   id          String @id @default(uuid())
   title       String
   order       Int
-  description String @db.Text
+  description String? @db.Text
 
   listId     String   @map("list_id")
   list       List     @relation(fields: [listId], references: [id], onDelete: Cascade)

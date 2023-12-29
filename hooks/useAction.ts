@@ -47,12 +47,18 @@ export const useAction = <TInput, TOutput>(
     },
     [action, options]
   );
-
+  const reset = useCallback(() => {
+    setData(null);
+    setIsLoading(false);
+    setError(null);
+    setFieldErrors(null);
+  }, []);
   return {
     execute,
     error,
     data,
     fieldErrors,
     isLoading,
+    reset,
   };
 };

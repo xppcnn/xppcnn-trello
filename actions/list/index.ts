@@ -5,13 +5,20 @@ import {
   copyListType,
   createListReturnType,
   createListType,
+  reorderListReturnType,
+  reorderListType,
   updateListReturnType,
   updateListType,
 } from "./types";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/createSafeAction";
-import { copyListSchema, createListSchema, updateListSchema } from "./schema";
+import {
+  copyListSchema,
+  createListSchema,
+  reorderListSchema,
+  updateListSchema,
+} from "./schema";
 const createListHandler = async (
   data: createListType
 ): Promise<createListReturnType> => {
@@ -186,6 +193,42 @@ const deleteListHandler = async (
   };
 };
 
+const reorderListHandler = async (
+  data: reorderListType
+): Promise<reorderListReturnType> => {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+  const { boardId, items } = data;
+  let lists;
+  try {
+    const transaction = items.map((list) =>
+      prisma.list.update({
+        where: {
+          id: list.id,
+        },
+        data: {
+          order: list.order,
+        },
+      })
+    );
+
+    lists = await prisma.$transaction(transaction);
+  } catch (error) {
+    return {
+      error: "列表排序错误",
+    };
+  }
+  revalidatePath(`/board/${boardId}`);
+  return {
+    data: lists,
+  };
+};
+
 export const createList = createSafeAction(createListSchema, createListHandler);
 
 export const updateList = createSafeAction(updateListSchema, updateListHandler);
@@ -193,3 +236,8 @@ export const updateList = createSafeAction(updateListSchema, updateListHandler);
 export const copyList = createSafeAction(copyListSchema, copyListHandler);
 
 export const deleteList = createSafeAction(copyListSchema, deleteListHandler);
+
+export const reorderList = createSafeAction(
+  reorderListSchema,
+  reorderListHandler
+);

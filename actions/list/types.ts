@@ -1,8 +1,9 @@
-import { z } from "zod";
+import { TypeOf, z } from "zod";
 import {
   copyListSchema,
   createListSchema,
   deleteListSchema,
+  reorderListSchema,
   updateListSchema,
 } from "./schema";
 import { ActionState } from "@/lib/createSafeAction";
@@ -19,3 +20,6 @@ export type copyListReturnType = ActionState<copyListType, List>;
 
 export type deleteListType = z.infer<typeof deleteListSchema>;
 export type deleteListReturnType = ActionState<copyListType, List>;
+
+export type reorderListType = z.infer<typeof reorderListSchema>;
+export type reorderListReturnType = ActionState<reorderListType, List[]>;

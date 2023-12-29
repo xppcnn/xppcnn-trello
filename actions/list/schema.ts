@@ -1,3 +1,4 @@
+import { List } from "lucide-react";
 import { z } from "zod";
 
 export const createListSchema = z.object({
@@ -33,4 +34,17 @@ export const copyListSchema = z.object({
 export const deleteListSchema = z.object({
   boardId: z.string(),
   id: z.string(),
+});
+
+export const reorderListSchema = z.object({
+  boardId: z.string(),
+  items: z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      order: z.number(),
+      createTime: z.date(),
+      updateTime: z.date(),
+    })
+    .array(),
 });
