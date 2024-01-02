@@ -35,11 +35,13 @@ const Header = ({ data }: HeaderProps) => {
 
   const handleSubmit = (formData: FormData) => {
     const title = formData.get("title") as string;
+    if (title === data.title) {
+      return;
+    }
     execute({
       title,
       id: data.id,
       boardId: params.boardId as string,
-      description: null,
     });
   };
   return (

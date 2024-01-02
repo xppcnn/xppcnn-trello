@@ -14,15 +14,17 @@ export const createCardSchema = z.object({
 });
 
 export const updateCardSchema = z.object({
-  title: z
-    .string({
-      invalid_type_error: "请输入标题",
-      required_error: "请输入标题",
-    })
-    .min(3, {
-      message: "标题不得少于三个字符",
-    }),
-  description: z.nullable(
+  title: z.optional(
+    z
+      .string({
+        invalid_type_error: "请输入标题",
+        required_error: "请输入标题",
+      })
+      .min(3, {
+        message: "标题不得少于三个字符",
+      })
+  ),
+  description: z.optional(
     z
       .string({
         invalid_type_error: "请输入描述",
