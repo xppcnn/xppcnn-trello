@@ -10,6 +10,7 @@ import {
 import useCardModal from "@/hooks/useCardModal";
 import { fetcher } from "@/lib/fetcher";
 import { CardWithList } from "@/types";
+import Header from "./header";
 
 const CardModal = () => {
   const id = useCardModal((state) => state.id);
@@ -22,13 +23,7 @@ const CardModal = () => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{cardData?.title}</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
-        </DialogHeader>
+        {cardData ? <Header data={cardData} /> : <Header.Skeleton />}
       </DialogContent>
     </Dialog>
   );

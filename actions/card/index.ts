@@ -6,10 +6,16 @@ import {
   createCardType,
   reorderCardReturnType,
   reorderCardType,
+  updateCardReturnType,
+  updateCardType,
 } from "./types";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/createSafeAction";
-import { createCardSchema, reorderCardSchema } from "./schema";
+import {
+  createCardSchema,
+  reorderCardSchema,
+  updateCardSchema,
+} from "./schema";
 
 const createCardHandler = async (
   data: createCardType
@@ -99,9 +105,46 @@ const reorderCardHandler = async (
   };
 };
 
+const updateCardHandler = async (
+  data: updateCardType
+): Promise<updateCardReturnType> => {
+  const { userId, orgId } = auth();
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+  const { boardId, id, ...values } = data;
+  let card;
+  try {
+    card = await prisma.card.update({
+      where: {
+        id: id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+      data: {
+        ...values,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "任务卡片更新失败",
+    };
+  }
+  revalidatePath(`/board/${boardId}`);
+  return {
+    data: card,
+  };
+};
+
 export const createCard = createSafeAction(createCardSchema, createCardHandler);
 
 export const reorderCard = createSafeAction(
   reorderCardSchema,
   reorderCardHandler
 );
+export const updateCard = createSafeAction(updateCardSchema, updateCardHandler);
