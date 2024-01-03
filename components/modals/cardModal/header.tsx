@@ -24,6 +24,7 @@ const Header = ({ data }: HeaderProps) => {
   const { execute } = useAction(updateCard, {
     onSuccess(data) {
       queryClient.invalidateQueries({ queryKey: ["card", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["card-audit-log", data.id] });
       toast.success(`修改成功`);
       setTitle(data.title);
       onClose();

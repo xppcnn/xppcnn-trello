@@ -27,6 +27,7 @@ const Description = ({ data }: DescriptionProps) => {
   const { execute, fieldErrors } = useAction(updateCard, {
     onSuccess(data) {
       queryClient.invalidateQueries({ queryKey: ["card", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["card-audit-log", data.id] });
       toast.success(`修改成功`);
       onClose();
     },
@@ -64,7 +65,7 @@ const Description = ({ data }: DescriptionProps) => {
     <div className="flex justify-start gap-x-3 w-full">
       <AlignLeft className="h-5 w-5 mt-0.5 text-neutral-700" />
       <div className="w-full">
-        <p className="font-semibold text-neutral-700 mb-2">Description</p>
+        <p className="font-semibold text-neutral-700 mb-2">描述</p>
         {isEditing ? (
           <form ref={formRef} className="space-y-2" action={handleSubmit}>
             <FormTextArea

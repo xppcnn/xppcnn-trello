@@ -22,6 +22,8 @@ import {
   reorderCardSchema,
   updateCardSchema,
 } from "./schema";
+import createAuditLog from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "prisma/prisma-client";
 
 const createCardHandler = async (
   data: createCardType
@@ -65,8 +67,14 @@ const createCardHandler = async (
         order: newOrder,
       },
     });
+
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.CREATE,
+    });
   } catch (error) {
-    console.log("🚀 ~ file: index.ts:51 ~ error:", error);
     return {
       error: "任务卡片创建失败",
     };
@@ -136,6 +144,12 @@ const updateCardHandler = async (
         ...values,
       },
     });
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.UPDATE,
+    });
   } catch (error) {
     return {
       error: "任务卡片更新失败",
@@ -163,6 +177,12 @@ const deleteCardHandler = async (
       where: {
         id: id,
       },
+    });
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.DELETE,
     });
   } catch (error) {
     return {
@@ -221,9 +241,15 @@ const copyCardHandler = async (
         order: newOrder,
       },
     });
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.CREATE,
+    });
   } catch (error) {
     return {
-      error: "任务卡片删除失败",
+      error: "任务卡片复制失败",
     };
   }
   revalidatePath(`/board/${boardId}`);
