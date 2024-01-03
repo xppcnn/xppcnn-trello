@@ -18,6 +18,8 @@ import { auth } from "@clerk/nextjs";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import createAuditLog from "@/lib/createAuditLog";
+import { ENTITY_TYPE, ACTION } from "prisma/prisma-client";
 
 const createBoardHandler = async (
   data: createBoardType
@@ -55,6 +57,12 @@ const createBoardHandler = async (
         imageLinkHTML,
       },
     });
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.CREATE,
+    });
     revalidatePath(`/board/${board.id}`);
     return {
       data: board,
@@ -89,6 +97,12 @@ const updateBoardHandler = async (
         title,
       },
     });
+    await createAuditLog({
+      entityId: updateBoard.id,
+      entityTitle: updateBoard.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.UPDATE,
+    });
     revalidatePath(`/board/${id}`);
     return {
       data: updateBoard,
@@ -114,11 +128,17 @@ const deleteBoardHandler = async (
   const { id } = data;
 
   try {
-    await prisma.board.delete({
+    const board = await prisma.board.delete({
       where: {
         id,
         orgId,
       },
+    });
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.DELETE,
     });
   } catch (error) {
     return {

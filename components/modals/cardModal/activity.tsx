@@ -1,7 +1,5 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import ActivityItem from "@/components/ActivityItem";
 import { Skeleton } from "@/components/ui/skeleton";
-import generateLogMessage from "@/lib/generateLogMessage";
-import { DateFormat } from "@/lib/utils";
 import { ActivityIcon } from "lucide-react";
 import { AuditLog } from "prisma/prisma-client";
 import React from "react";
@@ -10,9 +8,6 @@ interface ActivityProps {
   list: AuditLog[];
 }
 
-interface ActivityItemProps {
-  data: AuditLog;
-}
 const Activity = ({ list }: ActivityProps) => {
   return (
     <div className="flex justify-start w-full gap-x-2">
@@ -38,27 +33,6 @@ Activity.Skeleton = function ActivitySkeleton() {
         <Skeleton className="w-full h-10 bg-neutral-200" />
       </div>
     </div>
-  );
-};
-
-const ActivityItem = ({ data }: ActivityItemProps) => {
-  return (
-    <li className="flex items-center gap-x-2">
-      <Avatar>
-        <AvatarImage src={data.userImage} alt="avatar" />
-      </Avatar>
-      <div className="flex flex-col space-y-1">
-        <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-neutral-700 mr-2">
-            {data.userName}
-          </span>
-          {generateLogMessage(data)}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {DateFormat(new Date(data.createTime))}
-        </p>
-      </div>
-    </li>
   );
 };
 

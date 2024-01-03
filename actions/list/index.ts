@@ -19,6 +19,8 @@ import {
   reorderListSchema,
   updateListSchema,
 } from "./schema";
+import createAuditLog from "@/lib/createAuditLog";
+import { ENTITY_TYPE, ACTION } from "prisma/prisma-client";
 const createListHandler = async (
   data: createListType
 ): Promise<createListReturnType> => {
@@ -65,6 +67,13 @@ const createListHandler = async (
         order: newOrder,
       },
     });
+
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.CREATE,
+    });
   } catch (error) {
     return {
       error: "系统错误",
@@ -96,6 +105,12 @@ const updateListHandler = async (
       data: {
         title,
       },
+    });
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.UPDATE,
     });
   } catch (error) {
     return {
@@ -158,6 +173,12 @@ const copyListHandler = async (
       },
     },
   });
+  await createAuditLog({
+    entityId: copyList.id,
+    entityTitle: copyList.title,
+    entityType: ENTITY_TYPE.LIST,
+    action: ACTION.UPDATE,
+  });
   revalidatePath(`/board/${boardId}`);
   return {
     data: copyList,
@@ -176,11 +197,17 @@ const deleteListHandler = async (
   }
   const { id, boardId } = data;
   try {
-    await prisma.list.delete({
+    const list = await prisma.list.delete({
       where: {
         id,
         boardId,
       },
+    });
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.DELETE,
     });
   } catch (error) {
     return {
