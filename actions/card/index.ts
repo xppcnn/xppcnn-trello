@@ -2,8 +2,12 @@
 import { auth } from "@clerk/nextjs";
 import prisma from "@/lib/prisma";
 import {
+  copyCardReturnType,
+  copyCardType,
   createCardReturnType,
   createCardType,
+  deleteCardReturnType,
+  deleteCardType,
   reorderCardReturnType,
   reorderCardType,
   updateCardReturnType,
@@ -12,7 +16,9 @@ import {
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/createSafeAction";
 import {
+  copyCardSchema,
   createCardSchema,
+  deleteCardSchema,
   reorderCardSchema,
   updateCardSchema,
 } from "./schema";
@@ -141,10 +147,100 @@ const updateCardHandler = async (
   };
 };
 
+const deleteCardHandler = async (
+  data: deleteCardType
+): Promise<deleteCardReturnType> => {
+  const { userId, orgId } = auth();
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+  const { boardId, id } = data;
+  let card;
+  try {
+    card = await prisma.card.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "任务卡片删除失败",
+    };
+  }
+  revalidatePath(`/board/${boardId}`);
+  return {
+    data: card,
+  };
+};
+
+const copyCardHandler = async (
+  data: copyCardType
+): Promise<copyCardReturnType> => {
+  const { userId, orgId } = auth();
+  if (!userId || !orgId) {
+    return {
+      error: "UnAuthorized",
+    };
+  }
+  const { boardId, id } = data;
+  let card;
+  try {
+    const curCard = await prisma.card.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        list: true,
+      },
+    });
+    if (!curCard) {
+      return {
+        error: "任务卡片不存在",
+      };
+    }
+    const lastCard = await prisma.card.findFirst({
+      where: {
+        listId: curCard?.listId,
+      },
+      orderBy: {
+        order: "desc",
+      },
+      select: {
+        order: true,
+      },
+    });
+    const newOrder = lastCard ? lastCard.order + 1 : 1;
+
+    card = await prisma.card.create({
+      data: {
+        title: `${curCard.title}-copy`,
+        description: curCard.description,
+        listId: curCard.listId,
+        order: newOrder,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "任务卡片删除失败",
+    };
+  }
+  revalidatePath(`/board/${boardId}`);
+  return {
+    data: card,
+  };
+};
+
 export const createCard = createSafeAction(createCardSchema, createCardHandler);
 
 export const reorderCard = createSafeAction(
   reorderCardSchema,
   reorderCardHandler
 );
+
 export const updateCard = createSafeAction(updateCardSchema, updateCardHandler);
+
+export const deleteCard = createSafeAction(deleteCardSchema, deleteCardHandler);
+
+export const copyCard = createSafeAction(copyCardSchema, copyCardHandler);

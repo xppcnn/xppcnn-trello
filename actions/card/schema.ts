@@ -49,3 +49,13 @@ export const reorderCardSchema = z.object({
     .array(),
   boardId: z.string(),
 });
+
+export const deleteCardSchema = z.object({
+  id: z.string(),
+  boardId: z.string(),
+});
+
+export const copyCardSchema = z.object({
+  id: z.string(),
+  boardId: z.string(),
+});
