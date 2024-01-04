@@ -6,8 +6,8 @@ const Logo = () => {
   return (
     <Link href="/">
       <div className="hidden md:flex items-center gap-x-2 hover:opacity-70 transition">
-        <Image src="/logo.svg" alt="Logo" height={30} width={30} />
-        <p className={"text-lg text-neutral-700 pb-1"}>Taskify</p>
+        <Image src="/logo-sm.png" alt="Logo" height={30} width={30} />
+        <p className={"text-lg text-neutral-700 pb-1"}>Team Tools</p>
       </div>
     </Link>
   );

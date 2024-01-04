@@ -21,7 +21,7 @@ const MarketingPage = () => {
       <div className="flex items-center justify-center flex-col">
         <div className="mb-4 flex items-center p-4 border text-amber-700 shadow-md bg-amber-100 rounded-full uppercase">
           <Medal className="h-6 w-6 mr-2" />
-          No 1 task managment
+          Team tools
         </div>
         <h1
           className={cn(
@@ -29,10 +29,10 @@ const MarketingPage = () => {
             headingFont.className
           )}
         >
-          Taskify helps team move
+          Team Treasure Trove
         </h1>
-        <div className="text-3xl md:text-6xl bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white p-4 pt-2 rounded-md w-fit">
-          work forward.
+        <div className="text-2xl md:text-4xl bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white p-4 pt-2 rounded-md w-fit">
+          Team tools all in one.
         </div>
 
         <div
@@ -41,12 +41,15 @@ const MarketingPage = () => {
             textFont.className
           )}
         >
-          Collaborate, manage projects, and reach new productivity peaks. From
-          high rises to the home office, the way your team works is unique -
-          accomplish it all with Taskify.
+          Team collaboration has never been this simple! Team Treasure Trove
+          provides your team with an all-in-one collaboration tool, making your
+          team a highly efficient and seamlessly coordinated workforce. Our
+          product is designed to help you tackle various challenges in your
+          daily team collaboration, ensuring that your team operates more
+          efficiently and with impeccable organization.
         </div>
         <Button variant="default" asChild className="mt-6" size="lg">
-          <Link href="/sign-up">Get Taskify for free</Link>
+          <Link href="/sign-up">Get for free</Link>
         </Button>
       </div>
     </div>
