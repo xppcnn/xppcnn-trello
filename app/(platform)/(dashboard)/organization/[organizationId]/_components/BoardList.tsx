@@ -7,7 +7,8 @@ import FormPopover from "@/components/form/FormPopover";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { MAX_FREE_BOARDS } from "@/constants/board";
+import { getAvailableCount } from "@/lib/orgLimit";
 const BoardList = async () => {
   const { orgId } = auth();
   if (!orgId) {
@@ -22,6 +23,7 @@ const BoardList = async () => {
       createTime: "desc",
     },
   });
+  const availableCount = await getAvailableCount();
   return (
     <div className="space-y-4">
       <div className="flex items-centertext-lg font-semibold text-neutral-700">
@@ -46,9 +48,11 @@ const BoardList = async () => {
             role="button"
           >
             <p className="text-sm">创建</p>
-            <span className="text-xs">剩余5个</span>
+            <span className="text-xs">
+              剩余{MAX_FREE_BOARDS - availableCount}个
+            </span>
             <Hint
-              description="免费用户可以创建五个看板，超出限制请升级套餐"
+              description={`免费用户可以创建${MAX_FREE_BOARDS}个看板，超出限制请升级套餐`}
               sideOffset={40}
             >
               <HelpCircle className="absolute bottom-2 right-2 w-[14px] h-[14px]" />
