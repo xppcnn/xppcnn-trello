@@ -16,6 +16,9 @@ export function DateFormat(time: Date, formatText = "yyyy-MM-dd HH:mm:ss") {
   return format(date, formatText, { locale: zhCN });
 }
 
+export function absoluteUrl(path: string) {
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
+}
 // export const formatDateToLocal = (dateStr: string | Date) => {
 //   let date = dateStr;
 //   if (!(dateStr instanceof Date)) {
