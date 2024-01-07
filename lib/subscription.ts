@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs";
 
 const DAY_IN_MS = 86_400_000;
 
-const checkSubscription = async () => {
+const checkSubscription = async (): Promise<boolean> => {
   const { orgId } = auth();
   if (!orgId) {
     return false;
@@ -25,5 +25,7 @@ const checkSubscription = async () => {
   const isValid =
     orgSubscription.stripePriceId &&
     orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
-  return isValid;
+  return !!isValid;
 };
+
+export default checkSubscription;

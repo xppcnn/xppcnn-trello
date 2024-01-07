@@ -21,6 +21,7 @@ import { redirect } from "next/navigation";
 import createAuditLog from "@/lib/createAuditLog";
 import { ENTITY_TYPE, ACTION } from "prisma/prisma-client";
 import { canAdd, decreaseCount, increaseCount } from "@/lib/orgLimit";
+import checkSubscription from "@/lib/subscription";
 
 const createBoardHandler = async (
   data: createBoardType
@@ -34,7 +35,8 @@ const createBoardHandler = async (
   }
 
   const canCreate = await canAdd();
-  if (!canCreate) {
+  const isPro = await checkSubscription();
+  if (!canCreate && !isPro) {
     return {
       error: "看板创建数量已达上限，请升级套餐",
     };
@@ -65,8 +67,9 @@ const createBoardHandler = async (
         imageLinkHTML,
       },
     });
-
-    await increaseCount();
+    if (!isPro) {
+      await increaseCount();
+    }
     await createAuditLog({
       entityId: board.id,
       entityTitle: board.title,
@@ -128,7 +131,7 @@ const deleteBoardHandler = async (
   data: deleteBoardType
 ): Promise<deleteBoardReturnType> => {
   const { userId, orgId } = auth();
-
+  const isPro = await checkSubscription()
   if (!userId || !orgId) {
     return {
       error: "UnAuthorized",
@@ -155,7 +158,9 @@ const deleteBoardHandler = async (
       error: "系统错误,请稍后再试！",
     };
   }
-  await decreaseCount();
+  if (!isPro) {
+    await decreaseCount();
+  }
   revalidatePath(`/organization/${orgId}`);
   redirect(`/organization/${orgId}`);
 };

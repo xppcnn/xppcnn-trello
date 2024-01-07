@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MAX_FREE_BOARDS } from "@/constants/board";
 import { getAvailableCount } from "@/lib/orgLimit";
+import checkSubscription from "@/lib/subscription";
 const BoardList = async () => {
   const { orgId } = auth();
   if (!orgId) {
@@ -24,6 +25,7 @@ const BoardList = async () => {
     },
   });
   const availableCount = await getAvailableCount();
+  const isPro = await checkSubscription();
   return (
     <div className="space-y-4">
       <div className="flex items-centertext-lg font-semibold text-neutral-700">
@@ -49,7 +51,7 @@ const BoardList = async () => {
           >
             <p className="text-sm">创建</p>
             <span className="text-xs">
-              剩余{MAX_FREE_BOARDS - availableCount}个
+              {isPro ? "暂无限制" : `剩余${MAX_FREE_BOARDS - availableCount}个`}
             </span>
             <Hint
               description={`免费用户可以创建${MAX_FREE_BOARDS}个看板，超出限制请升级套餐`}
